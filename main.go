@@ -1,19 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/joho/godotenv"
+	"github.com/DixonOrtiz/ApiGateway/api"
 )
 
 func main() {
-	e := godotenv.Load()
-	if e != nil {
-		fmt.Println(e)
-		return
-	}
-
-	user := os.Getenv("USER")
-	fmt.Println(user)
+	api.Run()
 }
