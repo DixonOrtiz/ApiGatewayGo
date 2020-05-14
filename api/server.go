@@ -19,6 +19,7 @@ func Run() {
 	router.HandleFunc("/callback", controllers.HandleGoogleCallback)
 
 	//User routes
+	router.HandleFunc("/device/allDevices", controllers.GetAllDevices) //add admin middleware
 
 	portEnv := functions.GetEnv("PORT")
 	port := fmt.Sprintf(":%s", portEnv)
