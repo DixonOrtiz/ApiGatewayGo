@@ -51,5 +51,5 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("[Gateway API][GET][AUTH][/callback][PASSED]")
-	functions.JSON(w, http.StatusOK, user)
+	functions.ResponseJSON(w, http.StatusOK, user)
 }

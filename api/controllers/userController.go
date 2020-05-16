@@ -36,7 +36,35 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][PASSED]")
-	functions.JSON(w, http.StatusOK, string(responseBody))
+	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
+}
+
+//GetDevices controller
+//This controller gets the user's devices by its GoogleID
+func GetDevices(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[Gateway API][GET][USER][/user/devices}]")
+
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	endpoint := fmt.Sprintf("%s/devices", userURL)
+
+	response, err := http.Post(endpoint, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		log.Fatalf("failed getting user's devices: %s", err.Error())
+	}
+	defer response.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("failed getting user's devices: %s", err.Error())
+	}
+
+	fmt.Println("[Gateway API][GET][USER][/user/devices}][PASSED]")
+	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
+
 }
 
 //GetAllDevices controller
@@ -59,5 +87,5 @@ func GetAllDevices(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("[Gateway API][GET][USER][/user/allDevices}][PASSED]")
-	functions.JSON(w, http.StatusOK, string(responseBody))
+	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
