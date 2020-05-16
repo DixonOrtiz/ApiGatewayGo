@@ -9,6 +9,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
+//Variables to call the "http.ListenAndServe(port, router)"
+//function in "Run()" function defined in this package
+var (
+	portEnv = functions.GetEnv("PORT")
+	port    = fmt.Sprintf(":%s", portEnv)
+)
+
 //Run function
 //Function that raises the server and define the endpoints
 func Run() {
@@ -26,9 +33,6 @@ func Run() {
 	// router.HandleFunc("/user/linkUser/{userID}/{deviceID}", controllers.LinkUserToDevice).Methods("PUT") //add admin middleware
 	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET") //add admin middleware
 	// router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET")        //add admin middleware
-
-	portEnv := functions.GetEnv("PORT")
-	port := fmt.Sprintf(":%s", portEnv)
 
 	fmt.Printf("Running in port %s\n", portEnv)
 	http.ListenAndServe(port, router)
