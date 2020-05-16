@@ -21,7 +21,7 @@ func Run() {
 	//User routes
 	router.HandleFunc("/user/currentUser", controllers.GetCurrentUser).Methods("GET") //add JWT middleware
 	router.HandleFunc("/user/devices", controllers.GetDevices).Methods("GET")         //add JWT middleware
-	// router.HandleFunc("/user/saveDevice", controllers.SaveDevice).Methods("POST")     //add JWT middleware
+	router.HandleFunc("/user/saveDevice", controllers.SaveDevice).Methods("POST")     //add JWT middleware
 	// router.HandleFunc("/user/changeDevice", controllers.ChangeDevice).Methods("POST")
 	// router.HandleFunc("/user/linkUser/{userID}/{deviceID}", controllers.LinkUserToDevice).Methods("PUT") //add admin middleware
 	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET") //add admin middleware
