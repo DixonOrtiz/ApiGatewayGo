@@ -35,7 +35,8 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("failed getting user info: %s", err.Error())
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][PASSED]")
+	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][RESPONSE]")
+	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
 
@@ -62,7 +63,8 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("failed getting user's devices: %s", err.Error())
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/devices}][PASSED]")
+	fmt.Println("[Gateway API][GET][USER][/user/devices}][RESPONSE]")
+	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
 
@@ -90,7 +92,8 @@ func SaveDevice(w http.ResponseWriter, r *http.Request) {
 
 	defer response.Body.Close()
 
-	fmt.Println("[Gateway API][POST][USER][/user/saveDevice}][PASSED]")
+	fmt.Println("[Gateway API][POST][USER][/user/saveDevice}][RESPONSE]")
+	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
 
@@ -113,6 +116,7 @@ func GetAllDevices(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/allDevices}][PASSED]")
+	fmt.Println("[Gateway API][GET][USER][/user/allDevices}][RESPONSE]")
+	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }

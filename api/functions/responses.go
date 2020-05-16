@@ -1,6 +1,8 @@
 package functions
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -11,6 +13,17 @@ func ResponseJSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	fmt.Fprint(w, data)
+}
+
+//PrettyJSONTerminal function
+//Function that beautifully prints a json object
+func PrettyJSONTerminal(data []byte) {
+	dst := &bytes.Buffer{}
+	if err := json.Indent(dst, data, "", "  "); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(dst.String())
 }
 
 //ERROR function
