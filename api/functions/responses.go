@@ -1,32 +1,41 @@
 package functions
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-//JSON function
+//ResponseJSON function
 //Function that formats all server responses to JSON
-func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
+func ResponseJSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	err := json.NewEncoder(w).Encode(data)
-	if err != nil {
-		fmt.Fprintf(w, "%s", err.Error())
+	fmt.Fprint(w, data)
+}
+
+//PrettyJSONTerminal function
+//Function that beautifully prints a json object
+func PrettyJSONTerminal(data []byte) {
+	dst := &bytes.Buffer{}
+	if err := json.Indent(dst, data, "", "  "); err != nil {
+		panic(err)
 	}
+
+	fmt.Println(dst.String())
 }
 
 //ERROR function
 //Function that response an error from the server
 func ERROR(w http.ResponseWriter, statusCode int, err error) {
 	if err != nil {
-		JSON(w, statusCode, struct {
+		ResponseJSON(w, statusCode, struct {
 			Error string `json:"error"`
 		}{
 			Error: err.Error(),
 		})
 		return
 	}
-	JSON(w, http.StatusBadRequest, nil)
+	ResponseJSON(w, http.StatusBadRequest, nil)
 }
