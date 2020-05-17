@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/DixonOrtiz/ApiGateway/api/functions"
+	"github.com/gorilla/mux"
 )
 
 var userURL = functions.GetEnv("USER_URL")
@@ -144,7 +145,34 @@ func GetAllDevices(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/allDevices}][RESPONSE]")
+	fmt.Println("[Gateway API][Get][User][/user/allDevices}][Response]")
 	functions.PrettyJSONTerminal(responseBody)
+	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
+}
+
+//GetUserByDevice controller
+//Thsi controller gets the data info with a deviceId
+func GetUserByDevice(w http.ResponseWriter, r *http.Request) {
+	deviceID := mux.Vars(r)["deviceID"]
+	fmt.Printf("[Gateway API][Get][User][/user/device/%s/user}]\n", deviceID)
+
+	endpoint := fmt.Sprintf("%s/device/%s/user", userURL, deviceID)
+
+	fmt.Println(endpoint)
+
+	response, err := http.Get(endpoint)
+	if err != nil {
+		log.Fatalf("failed getting user by its device: %s", err.Error())
+	}
+	defer response.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("failed getting user by its device: %s", err.Error())
+
+	}
+
+	fmt.Printf("[Gateway API][Get][User][/user/device/%s/user}][Response]\n", deviceID)
+	functions.PrettyJSONTerminal([]byte(responseBody))
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }

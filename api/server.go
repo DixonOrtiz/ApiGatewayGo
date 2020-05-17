@@ -31,8 +31,8 @@ func Run() {
 	router.HandleFunc("/user/saveDevice", controllers.SaveDevice).Methods("POST")     //add JWT middleware
 	router.HandleFunc("/user/changeDevice", controllers.ChangeDevice).Methods("POST")
 	// router.HandleFunc("/user/linkUser/{userID}/{deviceID}", controllers.LinkUserToDevice).Methods("PUT") //add admin middleware
-	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET") //add admin middleware
-	// router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET")        //add admin middleware
+	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET")               //add admin middleware
+	router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET") //add admin middleware
 
 	fmt.Printf("Running in port %s\n", portEnv)
 	http.ListenAndServe(port, router)
