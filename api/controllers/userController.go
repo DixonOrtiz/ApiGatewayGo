@@ -35,7 +35,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("failed getting user info: %s", err.Error())
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][RESPONSE]")
+	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][RESPONSE]")
 	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
@@ -63,7 +63,7 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("failed getting user's devices: %s", err.Error())
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/devices}][RESPONSE]")
+	fmt.Println("[Gateway API][GET][USER][/user/devices}][RESPONSE]")
 	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
@@ -93,6 +93,34 @@ func SaveDevice(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	fmt.Println("[Gateway API][POST][USER][/user/saveDevice}][RESPONSE]")
+	functions.PrettyJSONTerminal(responseBody)
+	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
+}
+
+//ChangeDevice controller
+//This controller change an existing device by its deviceId
+func ChangeDevice(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[Gateway API][POST][USER][/user/changeDevice}]")
+
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	endpoint := fmt.Sprintf("%s/changeDevice", userURL)
+
+	response, err := http.Post(endpoint, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		log.Fatalf("failed changing a device: %s", err.Error())
+	}
+
+	responseBody, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("failed changing a device: %s", err.Error())
+	}
+	defer response.Body.Close()
+
+	fmt.Println("[Gateway API][POST][USER][/user/changeDevice}][RESPONSE]")
 	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }
