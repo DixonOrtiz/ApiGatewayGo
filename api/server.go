@@ -41,6 +41,11 @@ func Run() {
 	router.HandleFunc("/deviceControl/device/{deviceID}/configHistory", controllers.GetDeviceHistoryConfig).Methods("GET")
 	router.HandleFunc("/deviceControl/registry", controllers.GetRegistries).Methods("GET")
 
+	//Device Control routes
+	router.HandleFunc("/history/day/{deviceID}", controllers.GetDayGraph).Methods("GET")
+	router.HandleFunc("/history/week/{deviceID}", controllers.GetWeekGraph).Methods("GET")
+	router.HandleFunc("/month/day/{deviceID}", controllers.GetMonthGraph).Methods("GET")
+
 	fmt.Printf("Running in port %s\n", portEnv)
 	http.ListenAndServe(port, router)
 
