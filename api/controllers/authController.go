@@ -13,7 +13,8 @@ import (
 type UserData struct {
 	TokenJWT string `json:"token"`
 	GoogleID string `json:"id"`
-	Name     string `json:"name"`
+	Name     string `json:"given_name"`
+	Lastname string `json:"family_name"`
 	Email    string `json:"email"`
 	Photo    string `json:"picture"`
 }
@@ -40,7 +41,7 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	user := &UserData{}
 
-	err = json.Unmarshal(content, user) //paso de data de un []bytes a un struct de go
+	err = json.Unmarshal(content, user)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -49,8 +50,6 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(user.TokenJWT)
 	}
-
-	fmt.Println()
 
 	fmt.Println("[Gateway API][GET][AUTH][/callback][PASSED]")
 	functions.ResponseLoginJSON(w, http.StatusOK, user)
