@@ -47,9 +47,11 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	user.TokenJWT, err = auth.CreateToken(user.GoogleID)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(user.TokenJWT)
 	}
 
+	fmt.Println()
+
 	fmt.Println("[Gateway API][GET][AUTH][/callback][PASSED]")
-	functions.ResponseJSON(w, http.StatusOK, user)
+	functions.ResponseLoginJSON(w, http.StatusOK, user)
 }

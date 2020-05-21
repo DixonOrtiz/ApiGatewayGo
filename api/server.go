@@ -33,6 +33,14 @@ func Run() {
 	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET")               //add admin middleware
 	router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET") //add admin middleware
 
+	//Device Control routes
+	router.HandleFunc("/deviceControl/device/{deviceID}/state", controllers.GetDeviceLastState).Methods("GET")
+	// router.HandleFunc("/deviceControl/device/{deviceID}/config", controllers.getDeviceLastConfig).Methods("GET")
+	// router.HandleFunc("/deviceControl/device/{deviceID}", controllers.updateDeviceConfig).Methods("PUT")
+	// router.HandleFunc("/deviceControl/device/{deviceID}/stateHistory", controllers.getDeviceHistoryState).Methods("GET")
+	// router.HandleFunc("/deviceControl/device/{deviceID}/configHistory", controllers.getDeviceHistoryConfig).Methods("GET")
+	// router.HandleFunc("/deviceControl/registry", controllers.getRegistries).Methods("GET")
+
 	fmt.Printf("Running in port %s\n", portEnv)
 	http.ListenAndServe(port, router)
 

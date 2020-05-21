@@ -15,6 +15,17 @@ func ResponseJSON(w http.ResponseWriter, statusCode int, data interface{}) {
 	fmt.Fprint(w, data)
 }
 
+//ResponseLoginJSON function
+//Function that formats response to JSON in google callback
+func ResponseLoginJSON(w http.ResponseWriter, statusCode int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	err := json.NewEncoder(w).Encode(data)
+	if err != nil {
+		fmt.Fprintf(w, "%s", err.Error())
+	}
+}
+
 //PrettyJSONTerminal function
 //Function that beautifully prints a json object
 func PrettyJSONTerminal(data []byte) {
