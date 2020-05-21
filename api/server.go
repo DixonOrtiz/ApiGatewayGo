@@ -44,7 +44,7 @@ func Run() {
 	//Device Control routes
 	router.HandleFunc("/history/day/{deviceID}", controllers.GetDayGraph).Methods("GET")
 	router.HandleFunc("/history/week/{deviceID}", controllers.GetWeekGraph).Methods("GET")
-	router.HandleFunc("/month/day/{deviceID}", controllers.GetMonthGraph).Methods("GET")
+	router.HandleFunc("/history/month/{deviceID}", controllers.GetMonthGraph).Methods("GET")
 
 	fmt.Printf("Running in port %s\n", portEnv)
 	http.ListenAndServe(port, router)
