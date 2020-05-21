@@ -6,11 +6,12 @@ This app is made with Go and contains the entrance gates to the ioled backend.
 
 ## Execution and build
 
-- **Build**:
+- **Build**
 
-  sudo docker build --tag api-gateway:1.0 .here
+  `sudo docker build --tag api-gateway:1.0 .here`
 
-- **Execution**:
+- **Execution**
+
   `sudo docker run --publish 3000:3080 --detach --name api-g api-gateway:1.0`
 
 ## Project structure
