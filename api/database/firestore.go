@@ -10,11 +10,17 @@ import (
 
 //User type collection in Firstore
 type User struct {
-	GoogleID string `json:"id"`
-	Name     string `json:"given_name"`
-	Lastname string `json:"family_name"`
-	Email    string `json:"email"`
-	Photo    string `json:"picture"`
+	GoogleID string
+	Name     string
+	Lastname string
+	Email    string
+	Photo    string
+}
+
+//Device type collection in Firstore
+type Device struct {
+	DeviceID string
+	User     string //GoogleID in device document
 }
 
 //GetUser function
@@ -67,4 +73,36 @@ func CreateUser(user *User) (*User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+//VerifyDeviceUser function
+//Function that verifies if the deviceID and the googleID matches
+func VerifyDeviceUser(deviceID, googleID string) (bool, error) {
+	client, ctx, err := CreateFirestoreClient()
+	if err != nil {
+		fmt.Println("failed to create a Firestore client")
+	}
+	defer client.Close()
+
+	query := client.Collection("devices").Where("deviceID", "==", deviceID).Documents(ctx)
+	for {
+		doc, err := query.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return false, err
+		}
+
+		m := map[string]interface{}(doc.Data())
+
+		device := &Device{}
+		mapstructure.Decode(m, &device)
+
+		if device.User == googleID {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

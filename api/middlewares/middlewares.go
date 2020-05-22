@@ -8,6 +8,7 @@ import (
 	"github.com/DixonOrtiz/ApiGateway/api/auth"
 	"github.com/DixonOrtiz/ApiGateway/api/database"
 	"github.com/DixonOrtiz/ApiGateway/api/functions"
+	"github.com/gorilla/mux"
 )
 
 //UserAuthentication middleware
@@ -17,7 +18,6 @@ func UserAuthentication(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("[Gateway API][Middleware][UserAuthentication]")
 
-		//-> RECIBE EL JWT, Y LO VALIDA, SI ES VALIDO PASA, SI NO DESAUTORIZA
 		err := auth.TokenValidRequest(r)
 		if err != nil {
 			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
@@ -51,13 +51,32 @@ func ProtectedAuthentication(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("[Gateway API][Middleware][ProtectedAuthentication]")
 
-		//-> RECIBE EL JWT, Y LO VALIDA, SI ES VALIDO PASA, SI NO DESAUTORIZA
+		err := auth.TokenValidRequest(r)
+		if err != nil {
+			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
+			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+			return
+		}
 
-		//-> CONSULTA SI EL DISPOSITIVO CONSULTADO PERTENECE AL USUARIO TEL TOKEN (FIRESTORE DB)
-		//-> SI NO LO ES DESAUTORIZA
+		deviceID := mux.Vars(r)["deviceID"]
+		googleID := auth.ExtractTokenGoogleID(r)
 
-		fmt.Println("[Gateway API][Middleware][ProtectedAuthentication][Authorized]")
-		next(w, r)
+		deviceUserMatch, err := database.VerifyDeviceUser(deviceID, googleID)
+
+		if err != nil {
+			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
+			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+			return
+		}
+
+		if deviceUserMatch {
+			fmt.Println("[Gateway API][Middleware][ProtectedAuthentication][Authorized]")
+			next(w, r)
+			return
+		}
+
+		fmt.Println("[Gateway API][Middleware][ProtectedAuthentication][Unauthorized]")
+		return
 	}
 }
 

@@ -43,7 +43,7 @@ func Run() {
 	router.HandleFunc("/deviceControl/registry", controllers.GetRegistries).Methods("GET")
 
 	//Device Control routes
-	router.HandleFunc("/history/day/{deviceID}", controllers.GetDayGraph).Methods("GET")
+	router.HandleFunc("/history/day/{deviceID}", middlewares.ProtectedAuthentication(controllers.GetDayGraph)).Methods("GET")
 	router.HandleFunc("/history/week/{deviceID}", controllers.GetWeekGraph).Methods("GET")
 	router.HandleFunc("/history/month/{deviceID}", controllers.GetMonthGraph).Methods("GET")
 
