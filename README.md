@@ -2,18 +2,16 @@
 
 [![iOLEDBackend](https://img.shields.io/badge/iOLED-Backend-%23783578.svg)](https://www.ioled.cl/)
 
-This app is made with Go and contains the entrance gates to the ioled backend.
+This app is made with Go and contains the entrance gates to the iOLED backend.
 
 ## Execution and build
 
-- **Build**
+- **Install dependencies**
 
-  `sudo docker build --tag api-gateway:1.0 .`
+  Go 1.14 requires
+
+  `go get`
 
 - **Execution**
 
-  `sudo docker run --publish 3000:3080 --detach --name api-g api-gateway:1.0`
-
-## Project structure
-
-\*When it develops
+  `go run main.go`

@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/DixonOrtiz/ApiGateway/api/functions"
@@ -22,14 +22,17 @@ func GetDayGraph(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device's day history by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device's day history by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device's day history by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device's day history by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][History][/history/day/%s}]\n][Response]\n", deviceID)
@@ -46,14 +49,17 @@ func GetWeekGraph(w http.ResponseWriter, r *http.Request) {
 	endpoint := fmt.Sprintf("%s/week/%s", historyURL, deviceID)
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device's week history by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device's week history by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device's week history by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device's week history by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][History][/history/week/%s}]\n][Response]\n", deviceID)
@@ -70,14 +76,18 @@ func GetMonthGraph(w http.ResponseWriter, r *http.Request) {
 	endpoint := fmt.Sprintf("%s/month/%s", historyURL, deviceID)
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device's month history by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device's month history by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
+
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device's month history by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device's month history by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][History][/history/month/%s}]\n][Response]\n", deviceID)

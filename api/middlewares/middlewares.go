@@ -21,7 +21,7 @@ func UserAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		err := auth.TokenValidRequest(r)
 		if err != nil {
 			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
-			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+			functions.ERROR(w, http.StatusUnauthorized, errors.New("TokenValidRequest error"))
 			return
 		}
 
@@ -30,6 +30,7 @@ func UserAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		userFirestore, boolUserExists, err := database.GetUser(googleID)
 		if err != nil {
 			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
+			functions.ERROR(w, http.StatusUnauthorized, errors.New("ExtractTokenGoogleID error"))
 			return
 		}
 
@@ -102,8 +103,6 @@ func AdminAuthentication(next http.HandlerFunc) http.HandlerFunc {
 			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 			return
 		}
-
-		fmt.Println(isAdmin)
 
 		if isAdmin {
 			fmt.Println("[Gateway API][Middleware][AdminAuthentication][Authorized]")

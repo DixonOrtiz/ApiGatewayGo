@@ -27,25 +27,24 @@ func Run() {
 	router.HandleFunc("/callback", controllers.HandleGoogleCallback)
 
 	//User routes
-	router.HandleFunc("/user/currentUser", middlewares.UserAuthentication(controllers.GetCurrentUser)).Methods("GET")
+	router.HandleFunc("/user/currentUser", controllers.GetCurrentUser).Methods("GET")
 	router.HandleFunc("/user/devices", controllers.GetDevices).Methods("GET")
 	router.HandleFunc("/user/saveDevice", middlewares.UserAuthentication(controllers.SaveDevice)).Methods("POST")
-	router.HandleFunc("/user/changeDevice", controllers.ChangeDevice).Methods("POST")
+	router.HandleFunc("/user/changeDevice", middlewares.UserAuthentication(controllers.ChangeDevice)).Methods("POST")
 	router.HandleFunc("/user/allDevices", middlewares.AdminAuthentication(controllers.GetAllDevices)).Methods("GET")
 	router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET")
 
 	//Device Control routes
-	router.HandleFunc("/deviceControl/device/{deviceID}/state", controllers.GetDeviceLastState).Methods("GET")
-	router.HandleFunc("/deviceControl/device/{deviceID}/config", controllers.GetDeviceLastConfig).Methods("GET")
-	// router.HandleFunc("/deviceControl/device/{deviceID}", controllers.updateDeviceConfig).Methods("PUT")
-	router.HandleFunc("/deviceControl/device/{deviceID}/stateHistory", controllers.GetDeviceHistoryState).Methods("GET")
-	router.HandleFunc("/deviceControl/device/{deviceID}/configHistory", controllers.GetDeviceHistoryConfig).Methods("GET")
-	router.HandleFunc("/deviceControl/registry", controllers.GetRegistries).Methods("GET")
+	router.HandleFunc("/deviceControl/device/{deviceID}/state", middlewares.ProtectedAuthentication(controllers.GetDeviceLastState)).Methods("GET")
+	router.HandleFunc("/deviceControl/device/{deviceID}/config", middlewares.ProtectedAuthentication(controllers.GetDeviceLastConfig)).Methods("GET")
+	router.HandleFunc("/deviceControl/device/{deviceID}/stateHistory", middlewares.ProtectedAuthentication(controllers.GetDeviceHistoryState)).Methods("GET")
+	router.HandleFunc("/deviceControl/device/{deviceID}/configHistory", middlewares.ProtectedAuthentication(controllers.GetDeviceHistoryConfig)).Methods("GET")
+	router.HandleFunc("/deviceControl/registry", middlewares.AdminAuthentication(controllers.GetRegistries)).Methods("GET")
 
 	//Device Control routes
 	router.HandleFunc("/history/day/{deviceID}", middlewares.ProtectedAuthentication(controllers.GetDayGraph)).Methods("GET")
-	router.HandleFunc("/history/week/{deviceID}", controllers.GetWeekGraph).Methods("GET")
-	router.HandleFunc("/history/month/{deviceID}", controllers.GetMonthGraph).Methods("GET")
+	router.HandleFunc("/history/week/{deviceID}", middlewares.ProtectedAuthentication(controllers.GetWeekGraph)).Methods("GET")
+	router.HandleFunc("/history/month/{deviceID}", middlewares.ProtectedAuthentication(controllers.GetMonthGraph)).Methods("GET")
 
 	fmt.Printf("Running in port %s\n", portEnv)
 	http.ListenAndServe(port, router)

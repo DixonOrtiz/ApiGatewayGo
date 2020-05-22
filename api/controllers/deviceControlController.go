@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -22,14 +23,18 @@ func GetDeviceLastState(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
+
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][Device-Control][/deviceControl/device/%s/state}]\n][Response]\n", deviceID)
@@ -47,14 +52,18 @@ func GetDeviceLastConfig(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device last config: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
+
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device las last config: %s", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][Device-Control][/deviceControl/device/%s/config}]\n][Response]\n", deviceID)
@@ -72,14 +81,17 @@ func GetDeviceHistoryState(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device's history state by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device's history state by its deviceID: %sn", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device's history state by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device's history state by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][Device-Control][/deviceControl/device/%s/stateHistory}]\n][Response]\n", deviceID)
@@ -97,14 +109,17 @@ func GetDeviceHistoryConfig(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting device's history config by its deviceID: %s", err.Error())
+		fmt.Printf("failed getting device's history config by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device's history config by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device's history config by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][Device-Control][/deviceControl/device/%s/configHistory}]\n][Response]\n", deviceID)
@@ -127,8 +142,9 @@ func GetRegistries(w http.ResponseWriter, r *http.Request) {
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting device by its deviceID: %s", err.Error())
-
+		fmt.Printf("failed getting device by its deviceID: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][Device-Control][/deviceControl/registry]\n][Response]\n")

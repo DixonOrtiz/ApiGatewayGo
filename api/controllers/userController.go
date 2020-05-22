@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -20,20 +21,26 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Printf("failed getting the current user: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	endpoint := fmt.Sprintf("%s/user", userURL)
 
 	response, err := http.Post(endpoint, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Fatalf("failed getting user info: %s", err.Error())
+		fmt.Printf("failed getting the current user: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting user info: %s", err.Error())
+		fmt.Printf("failed getting the current user: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][RESPONSE]")
@@ -48,20 +55,26 @@ func GetDevices(w http.ResponseWriter, r *http.Request) {
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Printf("failed getting the users' devices: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	endpoint := fmt.Sprintf("%s/devices", userURL)
 
 	response, err := http.Post(endpoint, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Fatalf("failed getting user's devices: %s", err.Error())
+		fmt.Printf("failed getting the users' devices: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting user's devices: %s", err.Error())
+		fmt.Printf("failed getting the users' devices: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Println("[Gateway API][GET][USER][/user/devices}][RESPONSE]")
@@ -83,14 +96,17 @@ func SaveDevice(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Post(endpoint, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Fatalf("failed posting a new device: %s", err.Error())
+		fmt.Printf("failed posting a new device: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting user's devices: %s", err.Error())
+		fmt.Printf("failed posting a new device: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
-
 	defer response.Body.Close()
 
 	fmt.Println("[Gateway API][POST][USER][/user/saveDevice}][RESPONSE]")
@@ -112,12 +128,16 @@ func ChangeDevice(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Post(endpoint, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Fatalf("failed changing a device: %s", err.Error())
+		fmt.Printf("failed changing a device: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed changing a device: %s", err.Error())
+		fmt.Printf("failed changing a device: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
@@ -135,14 +155,17 @@ func GetAllDevices(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting user info: %s", err.Error())
+		fmt.Printf("failed getting all devices: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting user info: %s", err.Error())
-
+		fmt.Printf("failed getting all devices: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Println("[Gateway API][Get][User][/user/allDevices}][Response]")
@@ -162,14 +185,17 @@ func GetUserByDevice(w http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(endpoint)
 	if err != nil {
-		log.Fatalf("failed getting user by its device: %s", err.Error())
+		fmt.Printf("failed getting user by its device: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 	defer response.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatalf("failed getting user by its device: %s", err.Error())
-
+		fmt.Printf("failed getting user by its device: %s\n", err.Error())
+		functions.ERROR(w, http.StatusBadRequest, errors.New("bad request"))
+		return
 	}
 
 	fmt.Printf("[Gateway API][Get][User][/user/device/%s/user}][Response]\n", deviceID)
