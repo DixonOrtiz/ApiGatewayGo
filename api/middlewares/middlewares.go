@@ -53,7 +53,7 @@ func ProtectedAuthentication(next http.HandlerFunc) http.HandlerFunc {
 
 		err := auth.TokenValidRequest(r)
 		if err != nil {
-			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
+			fmt.Println("[Gateway API][Middleware][ProtectedAuthentication][Unauthorized]")
 			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 			return
 		}
@@ -64,7 +64,7 @@ func ProtectedAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		deviceUserMatch, err := database.VerifyDeviceUser(deviceID, googleID)
 
 		if err != nil {
-			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
+			fmt.Println("[Gateway API][Middleware][ProtectedAuthentication][Unauthorized]")
 			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 			return
 		}
@@ -76,6 +76,7 @@ func ProtectedAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		fmt.Println("[Gateway API][Middleware][ProtectedAuthentication][Unauthorized]")
+		functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
 }
@@ -86,12 +87,32 @@ func AdminAuthentication(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("[Gateway API][Middleware][AdminAuthentication]")
 
-		//-> RECIBE EL JWT, Y LO VALIDA, SI ES VALIDO PASA, SI NO DESAUTORIZA
+		err := auth.TokenValidRequest(r)
+		if err != nil {
+			fmt.Println("[Gateway API][Middleware][AdminAuthentication][Unauthorized]")
+			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+			return
+		}
 
-		//-> CONSULTA SI EL USUARIO ES UN ADMIN EN LA BASE DE DATOS (FIRESTORE DB)
-		//-> SI NO LO ES DESAUTORIZA
+		googleID := auth.ExtractTokenGoogleID(r)
 
-		fmt.Println("[Gateway API][Middleware][AdminAuthentication][Authorized]")
-		next(w, r)
+		isAdmin, err := database.VerifyAdmin(googleID)
+		if err != nil {
+			fmt.Println("[Gateway API][Middleware][AdminAuthentication][Unauthorized]")
+			functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+			return
+		}
+
+		fmt.Println(isAdmin)
+
+		if isAdmin {
+			fmt.Println("[Gateway API][Middleware][AdminAuthentication][Authorized]")
+			next(w, r)
+			return
+		}
+
+		fmt.Println("[Gateway API][Middleware][AdminAuthentication][Unauthorized]")
+		functions.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
 	}
 }

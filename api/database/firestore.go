@@ -15,6 +15,7 @@ type User struct {
 	Lastname string
 	Email    string
 	Photo    string
+	Role     string
 }
 
 //Device type collection in Firstore
@@ -104,5 +105,40 @@ func VerifyDeviceUser(deviceID, googleID string) (bool, error) {
 		}
 	}
 
+	return false, nil
+}
+
+//VerifyAdmin function
+//Function that verifies if the user by it's googleID is an admin
+func VerifyAdmin(googleID string) (bool, error) {
+	client, ctx, err := CreateFirestoreClient()
+	if err != nil {
+		fmt.Println("failed to create a Firestore client")
+	}
+	defer client.Close()
+
+	query := client.Collection("users").Where("googleID", "==", googleID).Documents(ctx)
+	for {
+		doc, err := query.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return false, err
+		}
+
+		m := map[string]interface{}(doc.Data())
+
+		fmt.Println(m)
+
+		user := &User{}
+		mapstructure.Decode(m, &user)
+
+		fmt.Println("USER ROLE:", user.Role)
+
+		if user.Role == "admin" {
+			return true, nil
+		}
+	}
 	return false, nil
 }

@@ -31,7 +31,7 @@ func Run() {
 	router.HandleFunc("/user/devices", controllers.GetDevices).Methods("GET")
 	router.HandleFunc("/user/saveDevice", middlewares.UserAuthentication(controllers.SaveDevice)).Methods("POST")
 	router.HandleFunc("/user/changeDevice", controllers.ChangeDevice).Methods("POST")
-	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET")
+	router.HandleFunc("/user/allDevices", middlewares.AdminAuthentication(controllers.GetAllDevices)).Methods("GET")
 	router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET")
 
 	//Device Control routes
