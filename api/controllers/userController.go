@@ -36,7 +36,7 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("failed getting user info: %s", err.Error())
 	}
 
-	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][RESPONSE]")
+	fmt.Println("[Gateway API][GET][USER][/user/currentUser}][RESPONSE]")
 	functions.PrettyJSONTerminal(responseBody)
 	functions.ResponseJSON(w, http.StatusOK, string(responseBody))
 }

@@ -27,13 +27,12 @@ func Run() {
 	router.HandleFunc("/callback", controllers.HandleGoogleCallback)
 
 	//User routes
-	router.HandleFunc("/user/currentUser", middlewares.SetMiddlewareAuthentication(controllers.GetCurrentUser)).Methods("GET")
-
-	router.HandleFunc("/user/devices", controllers.GetDevices).Methods("GET")     //add JWT middleware
-	router.HandleFunc("/user/saveDevice", controllers.SaveDevice).Methods("POST") //add JWT middleware
+	router.HandleFunc("/user/currentUser", middlewares.UserAuthentication(controllers.GetCurrentUser)).Methods("GET")
+	router.HandleFunc("/user/devices", controllers.GetDevices).Methods("GET")
+	router.HandleFunc("/user/saveDevice", middlewares.UserAuthentication(controllers.SaveDevice)).Methods("POST")
 	router.HandleFunc("/user/changeDevice", controllers.ChangeDevice).Methods("POST")
-	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET")               //add admin middleware
-	router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET") //add admin middleware
+	router.HandleFunc("/user/allDevices", controllers.GetAllDevices).Methods("GET")
+	router.HandleFunc("/user/device/{deviceID}/user", controllers.GetUserByDevice).Methods("GET")
 
 	//Device Control routes
 	router.HandleFunc("/deviceControl/device/{deviceID}/state", controllers.GetDeviceLastState).Methods("GET")

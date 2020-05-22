@@ -21,17 +21,17 @@ type UserData struct {
 
 //HandleGoogleLogin controler
 func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[Gateway API][GET][AUTH][/login]")
+	fmt.Println("[Gateway API][Get][Auth][/login]")
 
 	url := auth.GoogleOauthConfig.AuthCodeURL(auth.OauthStateString)
 
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-	fmt.Println("[Gateway API][GET][AUTH][/login][PASSED]")
+	fmt.Println("[Gateway API][Get][Auth][/login][Passed]")
 }
 
 //HandleGoogleCallback controller
 func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[Gateway API][GET][AUTH][/callback]")
+	fmt.Println("[Gateway API][Get][Auth][/callback]")
 	content, err := auth.GetUserInfo(r.FormValue("state"), r.FormValue("code"))
 	if err != nil {
 		fmt.Println(err.Error())
@@ -51,6 +51,6 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(user.TokenJWT)
 	}
 
-	fmt.Println("[Gateway API][GET][AUTH][/callback][PASSED]")
+	fmt.Println("[Gateway API][Get][Auth][/callback][Passed]")
 	functions.ResponseLoginJSON(w, http.StatusOK, user)
 }

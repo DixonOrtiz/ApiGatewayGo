@@ -22,7 +22,7 @@ func init() {
 		RedirectURL:  functions.GetEnv("GOOGLE_CALLBACK"),
 		ClientID:     functions.GetEnv("GOOGLE_CLIENT_ID"),
 		ClientSecret: functions.GetEnv("GOOGLE_CLIENT_SECRET"),
-		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"},
+		Scopes:       []string{functions.GetEnv("GOOGLE_SCOPES")},
 		Endpoint:     google.Endpoint,
 	}
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -13,16 +12,18 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
+var jwtKey = functions.GetEnv("JWT_KEY")
+
 //CreateToken function
 //This function create a new JWT
-func CreateToken(userID string) (string, error) {
+func CreateToken(googleID string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["user_id"] = userID
+	claims["google_id"] = googleID
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(functions.GetEnv("JWT_KEY")))
+	return token.SignedString([]byte(jwtKey))
 }
 
 //ExtractToken function
@@ -42,30 +43,22 @@ func ExtractToken(r *http.Request) string {
 	return ""
 }
 
-//ExtractTokenID function
-//This function extract de JWT from a request and return the userID
-func ExtractTokenID(r *http.Request) (uint32, error) {
-
+//ExtractTokenGoogleID function
+//This function extract de JWT from a request and return the googleID
+func ExtractTokenGoogleID(r *http.Request) string {
 	tokenString := ExtractToken(r)
+	claims := jwt.MapClaims{}
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte([]byte(functions.GetEnv("JWT_KEY"))), nil
+	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtKey), nil
 	})
 	if err != nil {
-		return 0, err
+		fmt.Println(err)
 	}
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok && token.Valid {
-		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["user_id"]), 10, 32)
-		if err != nil {
-			return 0, err
-		}
-		return uint32(uid), nil
-	}
-	return 0, nil
+
+	googleID := claims["google_id"]
+
+	return fmt.Sprint(googleID)
 }
 
 //TokenValidRequest function
@@ -73,18 +66,14 @@ func ExtractTokenID(r *http.Request) (uint32, error) {
 func TokenValidRequest(r *http.Request) error {
 	tokenString := ExtractToken(r)
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(functions.GetEnv("JWT_KEY")), nil
+		return []byte(jwtKey), nil
 	})
 	if err != nil {
 		return err
-	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		Pretty(claims)
 	}
 
 	return nil
@@ -97,7 +86,7 @@ func TokenValid(tokenString string) error {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(functions.GetEnv("JWT_KEY")), nil
+		return []byte(jwtKey), nil
 	})
 	if err != nil {
 		return err
