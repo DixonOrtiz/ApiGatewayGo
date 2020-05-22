@@ -8,7 +8,7 @@ This app is made with Go and contains the entrance gates to the iOLED backend.
 
 - **Install dependencies**
 
-  Go 1.14 requires
+  Go 1.14 required
 
   `go get`
 
