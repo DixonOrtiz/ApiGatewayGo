@@ -14,12 +14,26 @@ import (
 
 var jwtKey = functions.GetEnv("JWT_KEY")
 
+//UserData struct to receive the google auth responsw
+type UserData struct {
+	TokenJWT string `json:"token"`
+	GoogleID string `json:"id"`
+	Name     string `json:"given_name"`
+	Lastname string `json:"family_name"`
+	Email    string `json:"email"`
+	Photo    string `json:"picture"`
+}
+
 //CreateToken function
 //This function create a new JWT
-func CreateToken(googleID string) (string, error) {
+func CreateToken(user UserData) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["google_id"] = googleID
+	claims["google_id"] = user.GoogleID
+	claims["name"] = user.Name
+	claims["lastname"] = user.Lastname
+	claims["email"] = user.Email
+	claims["photo"] = user.Photo
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

@@ -21,7 +21,5 @@ func CreateFirestoreClient() (*firestore.Client, context.Context, error) {
 		return nil, ctx, err
 	}
 
-	fmt.Printf("%T", ctx)
-
 	return client, ctx, nil
 }

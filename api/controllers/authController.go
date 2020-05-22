@@ -9,16 +9,6 @@ import (
 	"github.com/DixonOrtiz/ApiGateway/api/functions"
 )
 
-//UserData struct to receive the google auth response
-type UserData struct {
-	TokenJWT string `json:"token"`
-	GoogleID string `json:"id"`
-	Name     string `json:"given_name"`
-	Lastname string `json:"family_name"`
-	Email    string `json:"email"`
-	Photo    string `json:"picture"`
-}
-
 //HandleGoogleLogin controler
 func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("[Gateway API][Get][Auth][/login]")
@@ -39,14 +29,14 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &UserData{}
+	user := &auth.UserData{}
 
 	err = json.Unmarshal(content, user)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	user.TokenJWT, err = auth.CreateToken(user.GoogleID)
+	user.TokenJWT, err = auth.CreateToken(*user)
 	if err != nil {
 		fmt.Println(user.TokenJWT)
 	}

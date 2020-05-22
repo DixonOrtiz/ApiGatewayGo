@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/DixonOrtiz/ApiGateway/api/auth"
+	"github.com/DixonOrtiz/ApiGateway/api/database"
 	"github.com/DixonOrtiz/ApiGateway/api/functions"
 )
 
@@ -24,10 +25,13 @@ func UserAuthentication(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		fmt.Println("googleID:", auth.ExtractTokenGoogleID(r))
+		googleID := auth.ExtractTokenGoogleID(r)
 
-		//-> CONSULTA EL USUARIO DE LA BASE DE DATOS (FIRESTORE DB)
-		//-> SI NO EXISTE, LO CREA (FIRESTORE DB)
+		_, _, err = database.GetUser(googleID)
+		if err != nil {
+			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
+			return
+		}
 
 		fmt.Println("[Gateway API][Middleware][UserAuthentication][Authorized]")
 		next(w, r)
