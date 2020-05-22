@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DixonOrtiz/ApiGateway/api/database"
 	"github.com/DixonOrtiz/ApiGateway/api/functions"
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -58,7 +59,7 @@ func ExtractToken(r *http.Request) string {
 }
 
 //ExtractTokenGoogleID function
-//This function extract de JWT from a request and return the googleID
+//This function extract the JWT from a request and return the googleID
 func ExtractTokenGoogleID(r *http.Request) string {
 	tokenString := ExtractToken(r)
 	claims := jwt.MapClaims{}
@@ -73,6 +74,30 @@ func ExtractTokenGoogleID(r *http.Request) string {
 	googleID := claims["google_id"]
 
 	return fmt.Sprint(googleID)
+}
+
+//ExtractUser function
+//This function extract the JWT from a request and return the User
+func ExtractUser(r *http.Request) database.User {
+	tokenString := ExtractToken(r)
+	claims := jwt.MapClaims{}
+
+	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtKey), nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	user := database.User{
+		GoogleID: fmt.Sprint(claims["google_id"]),
+		Name:     fmt.Sprint(claims["name"]),
+		Lastname: fmt.Sprint(claims["lastname"]),
+		Email:    fmt.Sprint(claims["email"]),
+		Photo:    fmt.Sprint(claims["photo"]),
+	}
+
+	return user
 }
 
 //TokenValidRequest function

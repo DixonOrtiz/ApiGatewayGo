@@ -27,13 +27,20 @@ func UserAuthentication(next http.HandlerFunc) http.HandlerFunc {
 
 		googleID := auth.ExtractTokenGoogleID(r)
 
-		_, _, err = database.GetUser(googleID)
+		userFirestore, boolUserExists, err := database.GetUser(googleID)
 		if err != nil {
 			fmt.Println("[Gateway API][Middleware][UserAuthentication][Unauthorized]")
 			return
 		}
 
-		fmt.Println("[Gateway API][Middleware][UserAuthentication][Authorized]")
+		if !boolUserExists {
+			user := auth.ExtractUser(r)
+			database.CreateUser(&user)
+
+			fmt.Println("[Gateway API][Middleware][UserAuthentication][User Created]", user)
+		}
+
+		fmt.Println("[Gateway API][Middleware][UserAuthentication][Authorized][User]", userFirestore)
 		next(w, r)
 	}
 }
